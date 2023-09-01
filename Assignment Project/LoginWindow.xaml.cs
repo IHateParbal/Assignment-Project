@@ -24,7 +24,7 @@ namespace Assignment_Project
     {
         public string UserName { get; set; }
         public string Password { get; set; }
-        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\madgw\source\repos\Console\personal project\personal project\POS.mdf;Integrated Security=True;Connect Timeout=30";
+        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\madgw\source\repos\Assignment Project\Assignment Project\Database1.mdf;Integrated Security=True;Connect Timeout=30";
         public LoginWindow()
         {
             InitializeComponent();
