@@ -24,5 +24,29 @@ namespace Assignment_Project
         {
             InitializeComponent();
         }
+
+        private void OverView_Click(object sender, RoutedEventArgs e)
+        {
+            MainFocusWindow.Navigate(new Uri("overView.xaml", UriKind.Relative));
+
+        }
+
+        private void Management_Click(object sender, RoutedEventArgs e)
+        {
+            MainFocusWindow.Navigate(new Uri("management.xaml", UriKind.Relative));
+
+        }
+
+        private void Contract_Click(object sender, RoutedEventArgs e)
+        {
+            MainFocusWindow.Navigate(new Uri("Contracts.xaml", UriKind.Relative));
+
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            MainFocusWindow.Navigate(new Uri("settings.xaml", UriKind.Relative));
+
+        }
     }
 }

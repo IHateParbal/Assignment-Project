@@ -7,6 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Center"  Grid.Column="0">
+            <Button x:Name="OverView" Content="OverView" Margin="2" Click="OverView_Click"/>
+            <Button x:Name="Management" Content="Management" Margin="2" Click="Management_Click"/>
+            <Button x:Name="Contract" Content="Contract" Margin="2" Click="Contract_Click"/>
+            <Button x:Name="Settings" Content="Setting" Margin="2" Click="Settings_Click"/>
+        </StackPanel>
+        <Frame Grid.Column="1" x:Name="MainFocusWindow" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
