@@ -13,6 +13,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
+        
         <StackPanel VerticalAlignment="Top" Margin="50" Grid.Column="0">
             <TextBox x:Name="InputFile"/>
             <ComboBox x:Name="Encryptionmethod" SelectedIndex="0" SelectionChanged="Encryptionmethod_SelectionChanged">
@@ -21,9 +23,11 @@
             </ComboBox>
             <PasswordBox x:Name="EncryptedKey"/>
             <TextBox x:Name="DeafultPath"/>
-            <Button x:Name="DeafultpathButton" Content="Path"/>
-            <Button x:Name="EncryptFileButton" Content="Encrypt"/>
+            <Button x:Name="DeafultpathButton" Content="Path" Click="DeafultpathButton_Click"/>
+            <Button x:Name="EncryptFileButton" Content="Encrypt" Click="EncryptFileButton_Click"/>
         </StackPanel>
+        
+        
         <StackPanel VerticalAlignment="Top" Margin="50" Grid.Column="1">
             <TextBox x:Name="InputEncryptedFile"/>
             <ComboBox x:Name="decryptionmethod" SelectedIndex="0" SelectionChanged="decryptionmethod_SelectionChanged">
@@ -33,8 +37,8 @@
             <TextBox x:Name="DecryptingFile"/>
             <PasswordBox x:Name="DecryptedKey"/>
             <TextBox x:Name="Path"/>
-            <Button x:Name="pathButton" Content="Path"/>
-            <Button x:Name="DecryptFileButton" Content="decrypt"/>
+            <Button x:Name="pathButton" Content="Path" Click="pathButton_Click"/>
+            <Button x:Name="DecryptFileButton" Content="decrypt" Click="DecryptFileButton_Click"/>
         </StackPanel>
     </Grid>
 </Page>

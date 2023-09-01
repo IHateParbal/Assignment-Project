@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace Assignment_Project
 {
@@ -23,6 +26,10 @@ namespace Assignment_Project
     public partial class Contracts : Page
     {
         int stringLength = 10;
+        string selectedOption;
+        string DecryptedFile;
+        string selectedOptionDec;
+        string encryptedFile;
         private static readonly Random random = new Random();
         private const string CharSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -34,48 +41,86 @@ namespace Assignment_Project
         public Contracts()
         {
             InitializeComponent();
-            /*string File = "input.txt";
-            string encryptedFile = "encrypted.enc";
-            string key = "yourSecretKey"; 
-
-            EncryptFile(File, encryptedFile, key); 
-            DecryptFile(encryptedFile, File, key);
-            EncryptFile3DES(encryptedFile, File, key);
-            DecryptFile3DES(encryptedFile, File, key);*/
-
         }
 
         private void decryptionmethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string File = InputEncryptedFile.Text;
-            string DecryptedFile = DecryptingFile.Text;
-            string key = DecryptedKey.Password;
-            DecryptFile(DecryptedFile, File, key);
-            DecryptFile3DES(DecryptedFile, File, key);
+            var comboBox = (ComboBox)sender;
+            var selectedItem = (ComboBoxItem)comboBox.SelectedItem;
+            selectedOptionDec = selectedItem.Content.ToString();
         }
 
         private void Encryptionmethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string File = InputEncryptedFile.Text;
-            string encryptedFile = GenerateRandomString(stringLength);
-            string key = DecryptedKey.Password;
-            EncryptFile(encryptedFile, File, key);
-            EncryptFile3DES(encryptedFile, File, key);
+            var comboBox = (ComboBox)sender;
+            var selectedItem = (ComboBoxItem)comboBox.SelectedItem;
+            selectedOption = selectedItem.Content.ToString();
         }
 
-        static void EncryptFile(string inputFile, string outputFile, string key)
+        private void EncryptFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void DeafultpathButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void pathButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void DecryptFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        static void EncryptFile3DES(string inputFile, string outputFile, string userKey)
+        {
+            using (TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider())
+            {
+                // Ensure the key is at least 24 characters
+                byte[] keyBytes = Encoding.UTF8.GetBytes(userKey.PadRight(24, '\0').Substring(0, 24));
+
+                tripleDes.Key = keyBytes;
+                tripleDes.GenerateIV();
+
+                using (FileStream fsInput = new FileStream(inputFile, FileMode.Open))
+                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create))
+                using (ICryptoTransform encryptor = tripleDes.CreateEncryptor())
+                using (CryptoStream csEncrypt = new CryptoStream(fsOutput, encryptor, CryptoStreamMode.Write))
+                {
+                    fsOutput.Write(tripleDes.IV, 0, tripleDes.IV.Length);
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+
+                    while ((bytesRead = fsInput.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        csEncrypt.Write(buffer, 0, bytesRead);
+                    }
+                }
+            }
+        }
+
+        static void EncryptFileAES(string inputFile, string outputFile, string userKey)
         {
             using (Aes aesAlg = Aes.Create())
             {
-                aesAlg.Key = System.Text.Encoding.UTF8.GetBytes(key);
+                // Ensure the key is at least 16 characters
+                byte[] keyBytes = Encoding.UTF8.GetBytes(userKey.PadRight(16, '\0').Substring(0, 16));
+
+                aesAlg.Key = keyBytes;
                 aesAlg.GenerateIV();
 
                 using (FileStream fsInput = new FileStream(inputFile, FileMode.Open))
                 using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create))
-                using (ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV))
+                using (ICryptoTransform encryptor = aesAlg.CreateEncryptor())
                 using (CryptoStream csEncrypt = new CryptoStream(fsOutput, encryptor, CryptoStreamMode.Write))
                 {
-                    fsOutput.Write(aesAlg.IV, 0, aesAlg.IV.Length); // Write IV to the beginning of the file
+                    fsOutput.Write(aesAlg.IV, 0, aesAlg.IV.Length);
 
                     byte[] buffer = new byte[4096];
                     int bytesRead;
@@ -88,82 +133,69 @@ namespace Assignment_Project
             }
         }
 
-        static void DecryptFile(string encryptedFile, string decryptedFile, string key)
+        static void DecryptFile3DES(string encryptedFile, string decryptedFile, string userKey)
+        {
+            using (TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider())
+            {
+                // Ensure the key is at least 24 characters
+                byte[] keyBytes = Encoding.UTF8.GetBytes(userKey.PadRight(24, '\0').Substring(0, 24));
+
+                byte[] iv = new byte[8];
+                using (FileStream fsEncrypted = new FileStream(encryptedFile, FileMode.Open))
+                {
+                    fsEncrypted.Read(iv, 0, iv.Length);
+                }
+
+                tripleDes.Key = keyBytes;
+                tripleDes.IV = iv;
+
+                using (FileStream fsEncrypted = new FileStream(encryptedFile, FileMode.Open))
+                using (FileStream fsDecrypted = new FileStream(decryptedFile, FileMode.Create))
+                using (ICryptoTransform decryptor = tripleDes.CreateDecryptor())
+                using (CryptoStream csDecrypt = new CryptoStream(fsDecrypted, decryptor, CryptoStreamMode.Write))
+                {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+
+                    fsEncrypted.Seek(8, SeekOrigin.Begin); // Skip the IV
+
+                    while ((bytesRead = fsEncrypted.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        csDecrypt.Write(buffer, 0, bytesRead);
+                    }
+                }
+            }
+        }
+
+        static void DecryptFileAES(string encryptedFile, string decryptedFile, string userKey)
         {
             using (Aes aesAlg = Aes.Create())
             {
-                byte[] encryptedBytes = File.ReadAllBytes(encryptedFile);
+                // Ensure the key is at least 16 characters
+                byte[] keyBytes = Encoding.UTF8.GetBytes(userKey.PadRight(16, '\0').Substring(0, 16));
 
                 byte[] iv = new byte[aesAlg.BlockSize / 8];
-                Array.Copy(encryptedBytes, iv, iv.Length);
+                using (FileStream fsEncrypted = new FileStream(encryptedFile, FileMode.Open))
+                {
+                    fsEncrypted.Read(iv, 0, iv.Length);
+                }
 
-                aesAlg.Key = System.Text.Encoding.UTF8.GetBytes(key);
+                aesAlg.Key = keyBytes;
                 aesAlg.IV = iv;
 
-                using (MemoryStream msInput = new MemoryStream(encryptedBytes, iv.Length, encryptedBytes.Length - iv.Length))
-                using (FileStream fsOutput = new FileStream(decryptedFile, FileMode.Create))
-                using (ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV))
-                using (CryptoStream csDecrypt = new CryptoStream(msInput, decryptor, CryptoStreamMode.Read))
+                using (FileStream fsEncrypted = new FileStream(encryptedFile, FileMode.Open))
+                using (FileStream fsDecrypted = new FileStream(decryptedFile, FileMode.Create))
+                using (ICryptoTransform decryptor = aesAlg.CreateDecryptor())
+                using (CryptoStream csDecrypt = new CryptoStream(fsDecrypted, decryptor, CryptoStreamMode.Write))
                 {
                     byte[] buffer = new byte[4096];
                     int bytesRead;
 
-                    while ((bytesRead = csDecrypt.Read(buffer, 0, buffer.Length)) > 0)
+                    fsEncrypted.Seek(iv.Length, SeekOrigin.Begin); // Skip the IV
+
+                    while ((bytesRead = fsEncrypted.Read(buffer, 0, buffer.Length)) > 0)
                     {
-                        fsOutput.Write(buffer, 0, bytesRead);
-                    }
-                }
-            }
-        }
-
-        static void EncryptFile3DES(string inputFile, string outputFile, string key)
-        {
-            using (TripleDESCryptoServiceProvider desAlg = new TripleDESCryptoServiceProvider())
-            {
-                desAlg.Key = System.Text.Encoding.UTF8.GetBytes(key);
-                desAlg.GenerateIV();
-
-                using (FileStream fsInput = new FileStream(inputFile, FileMode.Open))
-                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create))
-                using (ICryptoTransform encryptor = desAlg.CreateEncryptor(desAlg.Key, desAlg.IV))
-                using (CryptoStream csEncrypt = new CryptoStream(fsOutput, encryptor, CryptoStreamMode.Write))
-                {
-                    fsOutput.Write(desAlg.IV, 0, desAlg.IV.Length); // Write IV to the beginning of the file
-
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-
-                    while ((bytesRead = fsInput.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        csEncrypt.Write(buffer, 0, bytesRead);
-                    }
-                }
-            }
-        }
-
-        static void DecryptFile3DES(string inputFile, string outputFile, string key)
-        {
-            using (TripleDESCryptoServiceProvider desAlg = new TripleDESCryptoServiceProvider())
-            {
-                byte[] encryptedBytes = File.ReadAllBytes(inputFile);
-
-                byte[] iv = new byte[desAlg.BlockSize / 8];
-                Array.Copy(encryptedBytes, iv, iv.Length);
-
-                desAlg.Key = System.Text.Encoding.UTF8.GetBytes(key);
-                desAlg.IV = iv;
-
-                using (MemoryStream msInput = new MemoryStream(encryptedBytes, iv.Length, encryptedBytes.Length - iv.Length))
-                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create))
-                using (ICryptoTransform decryptor = desAlg.CreateDecryptor(desAlg.Key, desAlg.IV))
-                using (CryptoStream csDecrypt = new CryptoStream(msInput, decryptor, CryptoStreamMode.Read))
-                {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-
-                    while ((bytesRead = csDecrypt.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        fsOutput.Write(buffer, 0, bytesRead);
+                        csDecrypt.Write(buffer, 0, bytesRead);
                     }
                 }
             }
