@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Microsoft.Win32;
 using System.Diagnostics;
 
 namespace Assignment_Project
@@ -25,19 +24,11 @@ namespace Assignment_Project
     /// </summary>
     public partial class Contracts : Page
     {
-        int stringLength = 10;
-        string selectedOption;
-        string DecryptedFile;
         string selectedOptionDec;
-        string encryptedFile;
+        string selectedOption;
         private static readonly Random random = new Random();
         private const string CharSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public static string GenerateRandomString(int length)
-        {
-            return new string(Enumerable.Repeat(CharSet, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
         public Contracts()
         {
             InitializeComponent();
@@ -55,26 +46,6 @@ namespace Assignment_Project
             var comboBox = (ComboBox)sender;
             var selectedItem = (ComboBoxItem)comboBox.SelectedItem;
             selectedOption = selectedItem.Content.ToString();
-        }
-
-        private void EncryptFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void DeafultpathButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void pathButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void DecryptFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            
         }
 
         static void EncryptFile3DES(string inputFile, string outputFile, string userKey)
@@ -201,5 +172,103 @@ namespace Assignment_Project
             }
         }
 
+        public static string GenerateRandomString(int length)
+        {
+            return new string(Enumerable.Repeat(CharSet, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        private void fileSelectionDec_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All Files (*.thishasbeenencryptedsodontworrylmao)|*.thishasbeenencryptedsodontworrylmao"; 
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string selectedFilePath = openFileDialog.FileName;
+
+                string selectedFileNameDec = System.IO.Path.GetFileName(selectedFilePath);
+
+                InputFileDec.Text = selectedFileNameDec;
+            }
+        }
+
+        private void DeafultpathButtonDec_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.FileName = $@"C:\Users\madgw\source\repos\Assignment Project\Assignment Project\bin\Debug\{GenerateRandomString(8)}.txt";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                
+                string Def_selectedFilePathDec = saveFileDialog.FileName;
+
+               
+                DeafultPathDec.Text = System.IO.Path.GetFileName(Def_selectedFilePathDec);
+            }
+        }
+
+        private void EncryptFileButtonDec_Click(object sender, RoutedEventArgs e)
+        {
+            string InputFile = InputFileDec.Text;
+            string key = EncryptedKeyDec.Password;
+            string OutputFile =  DeafultPathDec.Text;
+            if (selectedOptionDec == "AES")
+            {
+                DecryptFileAES(InputFile, OutputFile, key);
+            }
+            else
+            {
+                DecryptFile3DES(InputFile, OutputFile, key);
+            }
+        }
+
+        private void fileSelection_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All Files (*.txt)|*.txt";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string selectedFilePath = openFileDialog.FileName;
+
+                string selectedFileName = System.IO.Path.GetFileName(selectedFilePath);
+
+                InputFileEnc.Text = selectedFileName;
+
+            }
+        }
+
+        private void DeafultpathButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.FileName = $@"C:\Users\madgw\source\repos\Assignment Project\Assignment Project\bin\Debug\{GenerateRandomString(8)}.thishasbeenencryptedsodontworrylmao";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+
+                string selectedFilePath = saveFileDialog.FileName;
+
+
+                DeafultPathDec.Text = System.IO.Path.GetFileName(selectedFilePath);
+            }
+        }
+
+        private void EncryptFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string InputFile = InputFileEnc.Text;
+            string key = EncryptedKey.Password;
+            string OutputFile = DeafultPathEnc.Text;
+            if (selectedOptionDec == "AES")
+            {
+                EncryptFileAES(InputFile, OutputFile, key);
+            }
+            else
+            {
+                EncryptFile3DES(InputFile, OutputFile, key);
+            }
+        }
     }
 }

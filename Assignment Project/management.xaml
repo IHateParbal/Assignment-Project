@@ -9,6 +9,21 @@
       Title="management">
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="390"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Label Content="Managenent" />
+        </Grid>
+            <DataGrid Grid.Row="1" AutoGenerateColumns="True" SelectionChanged="Employee_manager_Datagrid_SelectionChanged" ScrollViewer.CanContentScroll="True" Name="Employee_manager_Datagrid"/>
+        <Grid Grid.Row="2" Width="400" HorizontalAlignment="Left">
+            <UniformGrid Columns="3">
+                <Button x:Name="Add" Content="Add Employees" Click="Add_Click"/>
+                <Button x:Name="Update" Content="Update Employee" Click="Update_Click"/>
+                <Button x:Name="Remove" Content="Remove Employee" Click="Remove_Click"/>
+            </UniformGrid> 
+        </Grid>
     </Grid>
 </Page>
