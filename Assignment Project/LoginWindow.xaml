@@ -90,7 +90,7 @@
                     <Label Content="" x:Name="Header" Foreground="Coral" Margin="20 25 0 0" FontSize="25" FontFamily="poppins"/>
                     <TextBox x:Name="Username" Style="{StaticResource BottomBorderTextBoxStyle}" Height="20" Width="150" VerticalAlignment="Top" Margin="0 75 0 0"/>
                     <PasswordBox x:Name="password" Style="{StaticResource BottomBorderPasswordBoxStyle}" PasswordChar="~" Height="20" Width="150" VerticalAlignment="Top" Margin="0 120 0 0"/>
-                    <Button Height="25" Width="75" Content="gy" x:Name="LoginSignup" Margin=" 0 150 20 0" Background="Coral" Foreground="White" BorderBrush="Coral" VerticalAlignment="Center" HorizontalAlignment="Right" Click="Button_Click_2" VerticalContentAlignment="Center">
+                    <Button Height="25" Width="75" Content="" x:Name="LoginSignup" Margin=" 0 150 20 0" Background="Coral" Foreground="White" BorderBrush="Coral" VerticalAlignment="Center" HorizontalAlignment="Right" Click="Button_Click_2" VerticalContentAlignment="Center">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="1"/>
